@@ -1,0 +1,12 @@
+jaffle_data:
+ target: dev
+ outputs:
+   dev:
+     type: snowflake
+     account: https://co24109.us-east-2.aws.snowflakecomputing.com
+     user: ${{ secrets.DBT_ENV_SECRET_USER }}
+     password: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
+     role: reporter
+     database: analytics
+     warehouse: epd_developing
+     schema: jaffle_shop
