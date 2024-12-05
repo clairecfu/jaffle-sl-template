@@ -1,0 +1,44 @@
+name: Generate dbt Docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main  # Run on pushes to the main branch
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      # Step 3: Install dbt and dependencies
+      - name: Install dbt
+        run: |
+          pip install dbt-core dbt-snowflake
+
+      # Step 5: Generate dbt Docs
+      - name: Run dbt Docs Generate
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DBT_PROJECT_DIR: .
+          DBT_PROFILES_DIR: .dbt/profiles
+        run: |
+          dbt docs generate
+
+      # Step 6: Save Artifacts (optional)
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: dbt-docs
+          path: target/

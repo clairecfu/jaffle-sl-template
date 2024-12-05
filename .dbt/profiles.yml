@@ -1,0 +1,12 @@
+jaffle_shop:
+  target: dev
+  outputs:
+    dev: 
+      type: snowflake
+      host: https://co24109.us-east-2.aws.snowflakecomputing.com
+      user: "{{ env_var('DBT_ENV_SECRET_USER') }}"
+      pass: "{{ env_var('DBT_ENV_SECRET_PASSWORD') }}"
+      port: 5432
+      dbname: analytics
+      schema: jaffle_shop
+      threads: 4
