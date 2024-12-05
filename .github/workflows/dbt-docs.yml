@@ -44,10 +44,6 @@ jobs:
           echo "     database: analytics" >> .dbt/profiles.yml
           echo "     warehouse: epd_developing" >> .dbt/profiles.yml
           echo "     schema: jaffle_shop" >> .dbt/profiles.yml
-      # Step 5: Generate dbt Docs
-      - name: Debug dbt Profile
-        run: |
-          cat ~/.dbt/profiles.yml
       - name: Run dbt Docs Generate
         env:
           DBT_PROJECT_DIR: .
