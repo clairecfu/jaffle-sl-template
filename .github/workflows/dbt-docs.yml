@@ -30,6 +30,8 @@ jobs:
         env:
           DBT_PROJECT_DIR: .
           DBT_PROFILES_DIR: .dbt
+          DBT_ENV_SECRET_USER: ${{ secrets.DBT_ENV_SECRET_USER }}
+          DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
         run: |
           dbt docs generate
 
