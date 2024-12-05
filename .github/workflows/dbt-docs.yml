@@ -40,7 +40,7 @@ jobs:
           echo "     account: $SNOWFLAKE_ACCOUNT" >> ~/.dbt/profiles.yml
           echo "     user: $SNOWFLAKE_USER" >> ~/.dbt/profiles.yml
           echo "     password: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}" >> ~/.dbt/profiles.yml
-          echo "     role: reporter >> ~/.dbt/profiles.yml
+          echo "     role: reporter" >> ~/.dbt/profiles.yml
           echo "     database: analytics" >> ~/.dbt/profiles.yml
           echo "     warehouse: epd_developing" >> ~/.dbt/profiles.yml
           echo "     schema: jaffle_shop" >> ~/.dbt/profiles.yml
