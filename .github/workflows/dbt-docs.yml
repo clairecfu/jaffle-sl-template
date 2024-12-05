@@ -48,7 +48,7 @@ jobs:
       - name: Run dbt Docs Generate
         env:
           DBT_PROJECT_DIR: .
-          DBT_PROFILES_DIR: ~/.dbt/profiles.yml
+          DBT_PROFILES_DIR: ~/.dbt
         run: |
           dbt docs generate
 
