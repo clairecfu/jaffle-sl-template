@@ -1,4 +1,4 @@
-jaffle_data:
+jaffle-data:
  target: dev
  outputs:
    dev:
