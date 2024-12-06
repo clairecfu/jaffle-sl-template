@@ -66,6 +66,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
           if [ "$response" -eq 201 ]; then
             echo "✅ Successfully uploaded semantic layer."
+            cat response.txt | jq .
           else
             echo "❌ Failed to upload semantic layer."
             cat response.txt
@@ -85,6 +86,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
           if [ "$response" -eq 201 ]; then
             echo "✅ Successfully validated semantic layer."
+            cat response.txt | jq .
           else
             echo "❌ Validation failed for semantic layer."
             cat response.txt
