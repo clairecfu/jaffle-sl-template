@@ -9,4 +9,4 @@ jaffle-data:
       role: reporter
       database: analytics
       warehouse: epd_developing
-      schema: jaffle_shop
+      schema: jaffle_shop_raw
