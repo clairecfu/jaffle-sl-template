@@ -26,6 +26,10 @@ jobs:
         run: |
           pip install dbt-core dbt-snowflake
 
+      - name: Install dbt dependencies
+        run: |
+          dbt deps
+
       - name: Run dbt Docs Generate
         env:
           DBT_PROJECT_DIR: .
