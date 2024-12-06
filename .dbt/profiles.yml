@@ -7,6 +7,6 @@ jaffle-data:
       user: "{{ env_var('DBT_ENV_SECRET_USER') }}"
       password: "{{ env_var('DBT_ENV_SECRET_PASSWORD') }}"
       role: reporter
-      database: analytics
+      database: raw
       warehouse: epd_developing
       schema: jaffle_shop_raw
