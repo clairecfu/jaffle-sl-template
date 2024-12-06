@@ -1,0 +1,92 @@
+name: External Semantic Layer Sync
+run-name: ${{ github.actor }} is uploading an external semantic layer 🚀
+on:
+  push
+
+env:
+  # This needs to be set based on what language your semantic layer is in (CUBE, LOOKML, METRICFLOW)
+  SYNTAX: METRICFLOW
+  DATA_CONNECTION_ID: 32eac847-6bd4-48c7-ab1d-b02b49b7d94c
+  DOMAIN: rc.hex.tech
+  # The top level directory containing your semantic layer files. This defaults
+  # to the entire repository, but you can set this to be the path of a specific directory.
+  DIRECTORY: .
+jobs:
+  External-Semantic-Layer-Sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Confirm DIRECTORY variable
+      run: |
+        if [ -z "$DIRECTORY" ]; then
+          echo "❌ DIRECTORY variable is not set or is empty!"
+          exit 1
+        fi
+        echo "Importing files from directory $DIRECTORY"
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+
+    ## Generate DBT catalog file
+    - name: Install dbt
+      run: |
+        pip install dbt-core dbt-snowflake
+
+    - name: Install dbt dependencies
+      run: |
+        dbt deps
+
+    - name: Run dbt Docs Generate
+      env:
+        DBT_PROJECT_DIR: .
+        DBT_PROFILES_DIR: .dbt
+        DBT_ENV_SECRET_USER: ${{ secrets.DBT_ENV_SECRET_USER }}
+        DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
+      run: |
+        dbt docs generate
+
+    - name: Zip specified directory
+      run: |
+          cd $DIRECTORY
+          zip -r repo.zip .
+
+    - name: Send zip via curl
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      run: |
+          response=$(curl -s -w "%{http_code}" -o response.txt -X POST \
+            -F "data=@$DIRECTORY/repo.zip" \
+            -F "syntax=$SYNTAX" \
+            -F "dataConnectionId=$DATA_CONNECTION_ID" \
+            -F "verbose=true" \
+            https://${DOMAIN}/api/v1/semantic-layer \
+            -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
+          if [ "$response" -eq 201 ]; then
+            echo "✅ Successfully uploaded semantic layer."
+          else
+            echo "❌ Failed to upload semantic layer."
+            cat response.txt
+            exit 1
+          fi
+
+    - name: Send zip via curl (dry run)
+      if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
+      run: |
+          response=$(curl -s -w "%{http_code}" -o response.txt -X POST \
+            -F "data=@$DIRECTORY/repo.zip" \
+            -F "syntax=$SYNTAX" \
+            -F "dataConnectionId=$DATA_CONNECTION_ID" \
+            -F "verbose=true" \
+            -F "dryRun=true" \
+            https://${DOMAIN}/api/v1/semantic-layer \
+            -H "Authorization: Bearer ${{ secrets.HEXSEMANTICLAYERAPITOKEN }}")
+          if [ "$response" -eq 201 ]; then
+            echo "✅ Successfully validated semantic layer."
+          else
+            echo "❌ Validation failed for semantic layer."
+            cat response.txt
+            exit 1
+          fi
