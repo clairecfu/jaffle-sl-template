@@ -30,6 +30,12 @@ jobs:
         run: |
           dbt deps
 
+      # This is not required to generate the docs, but can be a useful step to
+      # catch any issues.
+      - name: Compile dbt (optional)
+        run: |
+         dbt compile
+
       - name: Run dbt Docs Generate
         env:
           DBT_PROJECT_DIR: .
